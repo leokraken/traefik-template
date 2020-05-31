@@ -2,9 +2,10 @@ version: '3'
 services:
   warp:
     image: "rust-warp:latest"
+    container_name: warpapi
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.warp.rule=Host(`tunnel.granbestiapop.com`)"
+      - "traefik.http.routers.warp.rule=Host(`warp.api.granbestiapop.com`)"
       - "traefik.http.routers.warp.entrypoints=websecure"
       - "traefik.http.routers.warp.tls.certresolver=myresolver"
     ports:
