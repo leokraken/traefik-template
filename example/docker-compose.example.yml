@@ -3,8 +3,10 @@ services:
   warp:
     image: "rust-warp:latest"
     labels:
-      - traefik.http.routers.warp.rule=Host(`rust.granbestiapop.com`)
+      - "traefik.enable=true"
+      - "traefik.http.routers.warp.rule=Host(`tunnel.granbestiapop.com`)"
+      - "traefik.http.routers.warp.entrypoints=websecure"
+      - "traefik.http.routers.warp.tls.certresolver=myresolver"
     ports:
       - "3030:3030"
     network_mode: bridge
-
