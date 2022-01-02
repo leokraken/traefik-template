@@ -9,9 +9,17 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       - "--certificatesresolvers.myresolver.acme.email=mail@example.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      ## Cloudflare for wildcard DNS challenge
+      - "--certificatesresolvers.cloudflare.acme.email=mail@example.com"
+      - "--certificatesresolvers.cloudflare.acme.storage=/letsencrypt/acme_cloudflare.json"
+      - "--certificatesresolvers.cloudflare.acme.dnsChallenge.provider=cloudflare"
+      - --certificatesresolvers.cloudflare.acme.dnsChallenge.resolvers=1.1.1.1:53,8.8.8.8:53
     ports:
       - "8090:8080"
       - "80:80"
@@ -19,4 +27,10 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "./letsencrypt:/letsencrypt"
-    network_mode: bridge
+    networks:
+      - traefik-net
+    environment:
+      - CF_API_EMAIL=mail@example.com
+      - CF_API_KEY=[REDACTED]
+networks:
+  traefik-net:
